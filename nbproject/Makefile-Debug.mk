@@ -57,7 +57,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-L/home/johannes/boost_1_58_0/libs
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -65,37 +65,37 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/firefly_final: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/firefly_final ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/firefly_final ${OBJECTFILES} ${LDLIBSOPTIONS} -lboost_system -lpthread -lcurses
 
 ${OBJECTDIR}/_ext/1628725810/Comport.o: /home/johannes/Firefly_Final/Comport.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/Comport.o /home/johannes/Firefly_Final/Comport.cpp
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/Comport.o /home/johannes/Firefly_Final/Comport.cpp
 
 ${OBJECTDIR}/_ext/1628725810/Firefly.o: /home/johannes/Firefly_Final/Firefly.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/Firefly.o /home/johannes/Firefly_Final/Firefly.cpp
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/Firefly.o /home/johannes/Firefly_Final/Firefly.cpp
 
 ${OBJECTDIR}/_ext/1628725810/NavigationCommand.o: /home/johannes/Firefly_Final/NavigationCommand.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/NavigationCommand.o /home/johannes/Firefly_Final/NavigationCommand.cpp
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/NavigationCommand.o /home/johannes/Firefly_Final/NavigationCommand.cpp
 
 ${OBJECTDIR}/_ext/1628725810/RouteStrategy.o: /home/johannes/Firefly_Final/RouteStrategy.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/RouteStrategy.o /home/johannes/Firefly_Final/RouteStrategy.cpp
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/RouteStrategy.o /home/johannes/Firefly_Final/RouteStrategy.cpp
 
 ${OBJECTDIR}/_ext/1628725810/SensorCommand.o: /home/johannes/Firefly_Final/SensorCommand.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/SensorCommand.o /home/johannes/Firefly_Final/SensorCommand.cpp
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/SensorCommand.o /home/johannes/Firefly_Final/SensorCommand.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:

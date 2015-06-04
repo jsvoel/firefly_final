@@ -46,6 +46,17 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>/home/johannes/boost_1_58_0/boost</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>/home/johannes/boost_1_58_0/libs</pElem>
+          </linkerAddLib>
+          <commandLine>-lboost_system -lpthread -lcurses</commandLine>
+        </linkerTool>
       </compileType>
       <item path="/home/johannes/Firefly_Final/Comport.cpp"
             ex="false"
