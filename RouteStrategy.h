@@ -48,8 +48,10 @@ public:
         // edit the persistant Waypoint Command of the base class to have no wait time
         wpc_.setWaittime(0);
         // c++11 style loop
-        for(auto wp : *(Firefly::getInstance()->getWaypoints()))
+        for(auto wp : *(Firefly::getInstance()->getWaypoints())) {
             wp->speed = 100;
+            wp->height = wp->height + 10.0;
+        }
         // execute the regular onStart method
         RouteStrategy::onStart();
     }
