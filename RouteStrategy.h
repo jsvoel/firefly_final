@@ -39,5 +39,20 @@ protected:
     bool completed_;
 };
 
+// Implement a speedflight mode, change all waypoints to max speed no wait time
+class SpeedFlightStrategy : public RouteStrategy {
+public:
+    // edit the onStart method to manipulate the Way Point List before navigating it
+    virtual void onStart(){
+        // edit the persistant Waypoint Command of the Base class to have no wait time
+        wpc_.getData()->wait_time = 0;
+        // c++11 style loop
+        for(auto wp : *(Firefly::getInstance()->getWaypoints()))
+            wp->speed = 100;
+        // execute the regular onStart method
+        RouteStrategy::onStart();
+    }
+};
+
 #endif	/* ROUTESTRATEGY_H */
 
