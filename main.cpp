@@ -8,19 +8,22 @@
 
 
 #include "Firefly.h"
-#include "interactive_helpers.h"
-
-
-/*
- * 
- */
-
+#include "WaypointIpad.h"
 
 int main(int argc, char** argv) {
     try {
-        //sensors();
-        //waypoints();
-        interactive();
+        Firefly* pfly = Firefly::getInstance();
+        
+        pfly->pushWaypoint(new WaypointIpad(49.846063, 8.636496));
+        pfly->pushWaypoint(new WaypointIpad(49.845989, 8.636873));
+        pfly->pushWaypoint(new WaypointIpad(49.845839, 8.636782));
+        pfly->pushWaypoint(new WaypointIpad(49.845812, 8.636400));
+        pfly->pushWaypoint(new WaypointIpad(49.845645, 8.636434));
+        pfly->pushWaypoint(new WaypointIpad(49.845753, 8.636693));
+        pfly->pushWaypoint(new WaypointIpad(49.845989, 8.636311));
+        
+        pfly->start();
+        
     } catch (std::runtime_error &e) {
         std::cout << "Runtime error: " << e.what() << std::endl;
     } catch (std::exception &e) {

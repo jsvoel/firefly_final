@@ -46,6 +46,17 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>/home/johannes/boost_1_58_0/boost</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>/home/johannes/boost_1_58_0/libs</pElem>
+          </linkerAddLib>
+          <commandLine>-lboost_system -lpthread</commandLine>
+        </linkerTool>
       </compileType>
       <item path="/home/johannes/Firefly_Final/Comport.cpp"
             ex="false"
@@ -97,7 +108,7 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="/home/johannes/Firefly_Final/interactive_helpers.h"
+      <item path="/home/johannes/Firefly_Final/WaypointIpad.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -175,7 +186,7 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="/home/johannes/Firefly_Final/interactive_helpers.h"
+      <item path="/home/johannes/Firefly_Final/WaypointIpad.h"
             ex="false"
             tool="3"
             flavor2="0">

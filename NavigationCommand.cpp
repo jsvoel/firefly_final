@@ -58,7 +58,7 @@ void NavigationCommand::execute() {
 WaypointCommand::WaypointCommand() : NavigationCommand("Waypoint Command", 's', PD_SINGLEWAYPOINT) {
     WAYPOINT* wp = getWP();
     wp->wp_number = 1;
-    wp->properties = WPPROP_HEIGHTENABLED;
+    wp->properties = WPPROP_HEIGHTENABLED | WPPROP_AUTOMATICGOTO;
     wp->max_speed = 20;
     wp->time = 1000;
     wp->pos_acc = 2500;
@@ -75,7 +75,7 @@ void WaypointCommand::execute(){
 
 void WaypointCommand::setAbsolute(int latitude, int longitude, int height) {
     WAYPOINT* wp = getWP();
-    wp->properties = WPPROP_HEIGHTENABLED | WPPROP_ABSCOORDS;
+    wp->properties = WPPROP_HEIGHTENABLED | WPPROP_ABSCOORDS | WPPROP_AUTOMATICGOTO;
     wp->X = longitude;
     wp->Y = latitude;
     wp->height = height * 1000;
@@ -83,7 +83,7 @@ void WaypointCommand::setAbsolute(int latitude, int longitude, int height) {
 
 void WaypointCommand::setRelative(int X, int Y, int height) {
     WAYPOINT* wp = getWP();
-    wp->properties = WPPROP_HEIGHTENABLED;
+    wp->properties = WPPROP_HEIGHTENABLED | WPPROP_AUTOMATICGOTO;
     wp->X = X * 1000;
     wp->Y = Y * 1000;
     wp->height = height * 1000;
