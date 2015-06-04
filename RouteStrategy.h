@@ -40,6 +40,7 @@ protected:
 };
 
 // Implement a speedflight mode, change all waypoints to max speed no wait time
+// Also increase the height of the flight slightly in order to prevent destruction of the drone
 class SpeedFlightStrategy : public RouteStrategy {
 public:
     // edit the onStart method to manipulate the Way Point List before navigating it
