@@ -5,9 +5,10 @@
  * Created on 27. April 2015, 12:26
  */
 
-
+#include <iostream>
 
 #include "Firefly.h"
+#include "RouteStrategy"
 #include "WaypointIpad.h"
 
 int main(int argc, char** argv) {
@@ -21,6 +22,12 @@ int main(int argc, char** argv) {
         pfly->pushWaypoint(new WaypointIpad(49.845645, 8.636434));
         pfly->pushWaypoint(new WaypointIpad(49.845753, 8.636693));
         pfly->pushWaypoint(new WaypointIpad(49.845989, 8.636311));
+        
+        std::cout << "Use Speedflight Strategy? Enter x, else standard strategy is used" << std::endl;
+        char in = 0;
+        std::cin.get(in);
+        if(in == 'x')
+            pfly->setRouteStrategy(new SpeedFlightStrategy());
         
         pfly->start();
         
