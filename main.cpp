@@ -26,8 +26,10 @@ int main(int argc, char** argv) {
         std::cout << "Use Speedflight Strategy? Enter x, else standard strategy is used" << std::endl;
         char in = 0;
         std::cin.get(in);
-        if(in == 'x')
+        if(in == 'x') {
             pfly->setRouteStrategy(new SpeedFlightStrategy());
+            std::cout << "Using Speed Mode" << std::endl;
+        }
         
         pfly->start();
         
