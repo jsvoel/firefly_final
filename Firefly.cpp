@@ -46,20 +46,20 @@ void Firefly::start() {
     LL_STATUS* plls = lls.getData();
     CURRENT_WAY* pcwc = cwc.getData();
     bool reached_pos = false;
-    
+
     // retry starting until it works. Dont want to mess a single flipped bit on startup to mess up everything
-    while(true){ 
-        try{
+    while (true) {
+        try {
             strategy_->onStart();
             break;
-        }catch(std::runtime_error &e){
+        } catch (std::runtime_error &e) {
             std::cerr << "Error on start: " << e.what() << std::endl;
         }
     }
-    
+
     // Main Navigation / Data send Loop
     // loop until done with the Navigation of this Route
-    while(!strategy_->completed()){ 
+    while (!strategy_->completed()) {
         try {
             // Poll all the data that is send to the operator
             gps.execute();
@@ -69,26 +69,26 @@ void Firefly::start() {
             // send the updated data
             sendData(pgps->latitude, pgps->longitude, pgps->height, pgps->speed_x, pgps->speed_y,
                     plls->battery_voltage_1, pcwc->navigation_status);
-            
+
             // check if the operator wants to abort the navigation
             // don't leave the navigation loop unless RouteStrategy says so
-            if(checkAbort()){
+            if (checkAbort()) {
                 strategy_->onAbort();
             }
-            
+
             // check if we reached the current waypoint, call only once before time is reached
-            if(pcwc->navigation_status & WP_NAVSTAT_REACHED_POS && !reached_pos) {
+            if (pcwc->navigation_status & WP_NAVSTAT_REACHED_POS && !reached_pos) {
                 strategy_->onReachWP();
                 // make sure we call this only once
                 reached_pos = true;
             }
             // check if we reached the current waypoint and stayed the time
-            if(pcwc->navigation_status & WP_NAVSTAT_REACHED_POS_TIME) {
+            if (pcwc->navigation_status & WP_NAVSTAT_REACHED_POS_TIME) {
                 strategy_->onTime();
                 // make sure we can call onReachWP() again for the next Waypoint
                 reached_pos = false;
             }
-        }catch(std::runtime_error &e){
+        } catch (std::runtime_error &e) {
             std::cerr << "Error durring navigation loop: " << e.what() << std::endl;
         }
     }
@@ -100,30 +100,29 @@ void Firefly::stop() {
 
 }
 
-void Firefly::sendData(int latitude, int longitude, int height, int speed_x, int speed_y, short voltage, short navstat){
+void Firefly::sendData(int latitude, int longitude, int height, int speed_x, int speed_y, short voltage, short navstat) {
     //TODO put actual net code here to transmit the data to the operator
-    
+
     // calculate the speed from the vector
     double dsx = speed_x, dsy = speed_y, speed = 0.0;
     dsx = dsx * dsx;
     dsy = dsy * dsy;
     speed = sqrt(dsx + dsy);
     speed = speed * 0.0036; // we want km/h not mm/s
-    
+
     static int count = 0; // dont flood the cout
-    if(++count == 5) { // and disply only every 5th status update
+    if (++count == 5) { // and disply only every 5th status update
         std::cout << "############################################" << std::endl;
-        
+
         std::cout << "NavStat: " << std::hex << navstat << std::dec;
-        if(navstat & WP_NAVSTAT_REACHED_POS_TIME)
-        {
+        if (navstat & WP_NAVSTAT_REACHED_POS_TIME) {
             std::cout << " Reached Time\n";
-        }else if(navstat & WP_NAVSTAT_REACHED_POS ) {
+        } else if (navstat & WP_NAVSTAT_REACHED_POS) {
             std::cout << " Reached Waypoint\n";
-        }else {
+        } else {
             std::cout << "\n";
         }
-            
+
         std::cout << "Latitu: " << latitude << "\nLongit:  " << longitude << std::endl;
         std::cout << "Height: " << height / 1000 << " m\nSpeed:  " << std::fixed << std::setprecision(2) << speed << " km/h" << std::endl;
         std::cout << "Batter: " << voltage << std::endl;
@@ -131,15 +130,12 @@ void Firefly::sendData(int latitude, int longitude, int height, int speed_x, int
     }
 }
 
-bool Firefly::checkAbort(){
+bool Firefly::checkAbort() {
     //TODO put actual net code here that can check if the flight shall be aborted
     return false;
 }
 
 void Firefly::clearRoute() {
-    for (wpcontainer_t::iterator it(waypoints_.begin()); it != waypoints_.end(); ++it) {
-        delete *it;
-    }
     waypoints_.clear();
 }
 
@@ -150,6 +146,6 @@ void Firefly::setRouteStrategy(RouteStrategy *rs) {
     strategy_ = rs;
 }
 
-void Firefly::pushWaypoint(WaypointIpad* wp) {
+void Firefly::pushWaypoint(const WaypointIpad& wp) {
     waypoints_.push_back(wp);
 }

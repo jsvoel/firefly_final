@@ -4,4 +4,18 @@
         <activeConfTypeElem>1</activeConfTypeElem>
         <activeConfIndexElem>0</activeConfIndexElem>
     </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/johannes/Firefly_Final/Firefly.h</file>
+            <file>file:/home/johannes/Firefly_Final/WaypointIpad.h</file>
+            <file>file:/home/johannes/Firefly_Final/SensorCommand.h</file>
+            <file>file:/home/johannes/Firefly_Final/main.cpp</file>
+            <file>file:/home/johannes/Firefly_Final/NavigationCommand.cpp</file>
+            <file>file:/home/johannes/Firefly_Final/RouteStrategy.cpp</file>
+            <file>file:/home/johannes/Firefly_Final/NavigationCommand.h</file>
+            <file>file:/home/johannes/Firefly_Final/Firefly.cpp</file>
+            <file>file:/home/johannes/Firefly_Final/RouteStrategy.h</file>
+        </group>
+    </open-files>
 </project-private>

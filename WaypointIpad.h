@@ -10,27 +10,42 @@
 
 #include <string>
 
-class WaypointIpad{
+class WaypointIpad {
 public:
-    WaypointIpad(double lat, double lon){
+
+    WaypointIpad(double lat, double lon, double hei, double spe, bool isAbsolute = true) {
+        if (isAbsolute) typ = "a"; // absolute waypoint
+        else typ = "r"; // relative waypoint
         latitude = lat;
         longitude = lon;
-        height = 10.0;
-        speed = 30;
+        height = hei;
+        speed = spe;
     }
-    
-    int getLatitude(){
+
+    int getLatitude() {
         return (latitude * 10000000.0); // lat * 10 ^ 7
     }
     
-    int getLongitude(){
+    int getX() {
+        return latitude;
+    }
+    
+    int getY() {
+        return longitude;
+    }
+
+    int getLongitude() {
         return (longitude * 10000000.0); // lon * 10 ^ 7
     }
-    
-    int getHeight(){
+
+    int getHeight() {
         return (height); // hei * 1
     }
-    
+
+    bool isAbsolute() {
+        return (typ == "a");
+    }
+
     std::string typ;
     double latitude;
     double longitude;

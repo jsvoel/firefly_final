@@ -12,14 +12,14 @@
 #include <iostream>
 
 #include "Comport.h"
+#include "WaypointIpad.h"
 
 #define COMPORT "/dev/ttyS3" // the port were the serial is to be opened
 #define BAUDRATE 57600 // the baud rate it shall be set to
 
-class WaypointIpad;
 class RouteStrategy;
 
-typedef std::list<WaypointIpad*> wpcontainer_t;
+typedef std::list<WaypointIpad> wpcontainer_t;
 
 class Firefly {
 public:
@@ -32,7 +32,7 @@ public:
 
     void clearRoute(); // clear all waypoints
     void setRouteStrategy(RouteStrategy *rs); // set the RouteStrategy
-    void pushWaypoint(WaypointIpad* wp); // put a Waypoint into the List
+    void pushWaypoint(const WaypointIpad& wp); // put a Waypoint into the List
 
     Comport* getComport();
     wpcontainer_t* getWaypoints();
