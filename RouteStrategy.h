@@ -8,6 +8,16 @@
 #ifndef ROUTESTRATEGY_H
 #define	ROUTESTRATEGY_H
 
+#define ROUTESTRAT_VERBOSE
+#ifdef ROUTESTRAT_VERBOSE
+#include <iostream>
+#endif
+
+#define ROUTESTRAT_LOGFILE
+#ifdef ROUTESTRAT_LOGFILE
+#include <fstream>
+#define ROUTELOGFILE "strategylog.txt"
+#endif
 #include "Firefly.h"
 #include "NavigationCommand.h"
 #include "WaypointIpad.h"
@@ -36,6 +46,9 @@ public:
     // Called by Firefly when the Navigation Loop is left
     virtual void onLeave();
 protected:
+#ifdef ROUTESTRAT_LOGFILE
+    std::fstream logfile_; 
+#endif
     wpcontainer_t::iterator cur_, end_;
     WaypointCommand wpc_;
     bool completed_;
@@ -49,6 +62,12 @@ public:
     // edit the onStart method to manipulate the Way Point List before navigating it
 
     virtual void onStart() {
+#ifdef ROUTESTRAT_VERBOSE
+        std::cout << "onStart()...SpeedFlightStrategy" << std::endl;
+#endif
+#ifdef ROUTESTRAT_LOGFILE
+        logfile_ << "onStart()...SpeedFlightStrategy" << std::endl;
+#endif
         // edit the persistant Waypoint Command of the base class to have no wait time
         wpc_.setWaittime(0);
         wpcontainer_t::iterator beg = Firefly::getInstance()->getWaypoints()->begin();
@@ -73,6 +92,12 @@ public:
     // edit the onEnd method to not land, but execute the home command instead
 
     virtual void onEnd() {
+#ifdef ROUTESTRAT_VERBOSE
+        std::cout << "onEnd()...ComeHomeStrategy" << std::endl;
+#endif
+#ifdef ROUTESTRAT_LOGFILE
+        logfile_ << "onEnd()...ComeHomeStrategy" << std::endl;
+#endif
         HomeCommand hec;
         hec.execute();
         onwayhome_ = true;
@@ -82,6 +107,12 @@ public:
     // to completed and land at the current position
 
     virtual void onReach() {
+#ifdef ROUTESTRAT_VERBOSE
+        std::cout << "onReach()...ComeHomeStrategy" << std::endl;
+#endif
+#ifdef ROUTESTRAT_LOGFILE
+        logfile_ << "onReach()...ComeHomeStrategy" << std::endl;
+#endif
         if (onwayhome_) {
             RouteStrategy::onEnd();
         }
@@ -99,13 +130,19 @@ public:
     // and add them at the back of the waypoint container
 
     virtual void onStart() {
+#ifdef ROUTESTRAT_VERBOSE
+        std::cout << "onStart()...ReverseStrategy" << std::endl;
+#endif
+#ifdef ROUTESTRAT_LOGFILE
+        logfile_ << "onStart()...ReverseStrategy" << std::endl;
+#endif
         wpcontainer_t *wpc = Firefly::getInstance()->getWaypoints();
         wpcontainer_t::iterator beg = wpc->begin();
         wpcontainer_t::iterator end = wpc->end();
-        for (--end; beg != end; --end) {
+        for (--end; beg != end;) {
+            --end;
             wpc->push_back(*end);
         }
-        wpc->push_back(*beg); // push first wp because it didn't get pushed in the loop
         // Execute the regular onStart() to get the drone going
         RouteStrategy::onStart();
     }
@@ -123,6 +160,12 @@ public:
     // during onStart. Use of relative waypoints makes it an easy task
 
     virtual void onStart() {
+#ifdef ROUTESTRAT_VERBOSE
+        std::cout << "onStart()...SquareStrategy" << std::endl;
+#endif
+#ifdef ROUTESTRAT_LOGFILE
+        logfile_ << "onStart()...SquareStrategy" << std::endl;
+#endif
         wpcontainer_t *wpc = Firefly::getInstance()->getWaypoints();
         wpcontainer_t::iterator beg = wpc->begin();
         wpcontainer_t::iterator end = wpc->end();
