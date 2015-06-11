@@ -6,10 +6,11 @@
                    projectFiles="true">
       <itemPath>/home/johannes/Firefly_Final/Comport.h</itemPath>
       <itemPath>/home/johannes/Firefly_Final/Firefly.h</itemPath>
+      <itemPath>/home/johannes/Firefly_Final/FireflyErrors.h</itemPath>
       <itemPath>/home/johannes/Firefly_Final/NavigationCommand.h</itemPath>
+      <itemPath>/home/johannes/Firefly_Final/Network.h</itemPath>
       <itemPath>/home/johannes/Firefly_Final/RouteStrategy.h</itemPath>
       <itemPath>/home/johannes/Firefly_Final/SensorCommand.h</itemPath>
-      <itemPath>/home/johannes/Firefly_Final/interactive_helpers.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -21,6 +22,7 @@
       <itemPath>/home/johannes/Firefly_Final/Comport.cpp</itemPath>
       <itemPath>/home/johannes/Firefly_Final/Firefly.cpp</itemPath>
       <itemPath>/home/johannes/Firefly_Final/NavigationCommand.cpp</itemPath>
+      <itemPath>/home/johannes/Firefly_Final/Network.cpp</itemPath>
       <itemPath>/home/johannes/Firefly_Final/RouteStrategy.cpp</itemPath>
       <itemPath>/home/johannes/Firefly_Final/SensorCommand.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -78,12 +80,27 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="/home/johannes/Firefly_Final/FireflyErrors.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="/home/johannes/Firefly_Final/NavigationCommand.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="/home/johannes/Firefly_Final/NavigationCommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="/home/johannes/Firefly_Final/Network.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="/home/johannes/Firefly_Final/Network.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -104,11 +121,6 @@
             flavor2="0">
       </item>
       <item path="/home/johannes/Firefly_Final/SensorCommand.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/johannes/Firefly_Final/WaypointIpad.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -156,12 +168,27 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="/home/johannes/Firefly_Final/FireflyErrors.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="/home/johannes/Firefly_Final/NavigationCommand.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="/home/johannes/Firefly_Final/NavigationCommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="/home/johannes/Firefly_Final/Network.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="/home/johannes/Firefly_Final/Network.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -182,11 +209,6 @@
             flavor2="0">
       </item>
       <item path="/home/johannes/Firefly_Final/SensorCommand.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/johannes/Firefly_Final/WaypointIpad.h"
             ex="false"
             tool="3"
             flavor2="0">

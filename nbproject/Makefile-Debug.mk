@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/1628725810/Comport.o \
 	${OBJECTDIR}/_ext/1628725810/Firefly.o \
 	${OBJECTDIR}/_ext/1628725810/NavigationCommand.o \
+	${OBJECTDIR}/_ext/1628725810/Network.o \
 	${OBJECTDIR}/_ext/1628725810/RouteStrategy.o \
 	${OBJECTDIR}/_ext/1628725810/SensorCommand.o \
 	${OBJECTDIR}/main.o
@@ -81,6 +82,11 @@ ${OBJECTDIR}/_ext/1628725810/NavigationCommand.o: /home/johannes/Firefly_Final/N
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/NavigationCommand.o /home/johannes/Firefly_Final/NavigationCommand.cpp
+
+${OBJECTDIR}/_ext/1628725810/Network.o: /home/johannes/Firefly_Final/Network.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I/home/johannes/boost_1_58_0/boost -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1628725810/Network.o /home/johannes/Firefly_Final/Network.cpp
 
 ${OBJECTDIR}/_ext/1628725810/RouteStrategy.o: /home/johannes/Firefly_Final/RouteStrategy.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1628725810

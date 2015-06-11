@@ -19,6 +19,17 @@ Firefly* Firefly::instance_ = 0;
 Firefly::Firefly()
 : comport_(COMPORT, BAUDRATE) {
     strategy_ = new RouteStrategy();
+    
+    timespec reqt, remt;
+    reqt.tv_sec = 1;
+    reqt.tv_nsec = 0;
+    // don't do anything unless we can get our Network up and running
+    while(network_.initSocketRecv() == -1){
+        nanosleep(&reqt, &remt);
+    }
+    while(network_.initSocketSendInformation() == -1){
+        nanosleep(&reqt, &remt);
+    }
 }
 
 Firefly::~Firefly() {
@@ -36,6 +47,26 @@ Firefly* Firefly::getInstance() {
         }
     }
     return instance_;
+}
+
+void Firefly::go(){
+    while(true){
+        int status = network_.recvMission();
+        if(status == -2){ // received complete mission, lets go!
+            clearRoute(); // delete the last Mission
+            std::vector<waypoint> vwp = network_.getWaypoints(); // get the waypoint vector. waypoint defined in Network.h
+            for(int i = 0; i < vwp.size(); ++i){
+                // convert network waypoint to IpadWaypoint and add them to the Firefly waypoint Container
+                pushWaypoint(WaypointIpad(vwp[i].latitude, vwp[i].longitude, vwp[i].height, vwp[i].speed));
+            }
+            // get Mission type and add the specific strategy
+            //this->setRouteStrategy("Whatever");
+            // start the whole thing up
+            start();
+            // we are done, send the the Ipad a note that the mission is over and wait for the next mission
+            // network_.sendDataInformation("missioncomplete");
+        }
+    }
 }
 
 void Firefly::start() {
@@ -96,38 +127,20 @@ void Firefly::start() {
     strategy_->onLeave();
 }
 
-void Firefly::stop() {
-
-}
-
 void Firefly::sendData(int latitude, int longitude, int height, int speed_x, int speed_y, short voltage, short navstat) {
-    //TODO put actual net code here to transmit the data to the operator
-
     // calculate the speed from the vector
     double dsx = speed_x, dsy = speed_y, speed = 0.0;
     dsx = dsx * dsx;
     dsy = dsy * dsy;
     speed = sqrt(dsx + dsy);
     speed = speed * 0.0036; // we want km/h not mm/s
-
-    static int count = 0; // dont flood the cout
-    if (++count == 5) { // and disply only every 5th status update
-        std::cout << "############################################" << std::endl;
-
-        std::cout << "NavStat: " << std::hex << navstat << std::dec;
-        if (navstat & WP_NAVSTAT_REACHED_POS_TIME) {
-            std::cout << " Reached Time\n";
-        } else if (navstat & WP_NAVSTAT_REACHED_POS) {
-            std::cout << " Reached Waypoint\n";
-        } else {
-            std::cout << "\n";
-        }
-
-        std::cout << "Latitu: " << latitude << "\nLongit:  " << longitude << std::endl;
-        std::cout << "Height: " << height / 1000 << " m\nSpeed:  " << std::fixed << std::setprecision(2) << speed << " km/h" << std::endl;
-        std::cout << "Batter: " << voltage << std::endl;
-        count = 0;
-    }
+    
+    double lat = double(latitude) / 10000000.0;    
+    double lon = double(longitude) / 10000000.0;
+    double chg = double(voltage) / 1000.0;
+    double hei = double(height);
+    
+    network_.sendDataInformation(network_.parseSend("",lat, lon, hei, chg, speed));
 }
 
 bool Firefly::checkAbort() {
