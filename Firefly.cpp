@@ -19,6 +19,7 @@ Firefly* Firefly::instance_ = 0;
 Firefly::Firefly()
 : comport_(COMPORT, BAUDRATE) {
     strategy_ = new RouteStrategy();
+    network_.setIpadress(IPADDRESS_HOST);
     
     timespec reqt, remt;
     reqt.tv_sec = 1;

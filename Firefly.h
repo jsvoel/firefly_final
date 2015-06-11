@@ -20,7 +20,7 @@
 #define COMPORT "/dev/ttyS3" // the port were the serial is to be opened
 #define BAUDRATE 57600 // the baud rate it shall be set to
 // Network Socket Magic Numbers //
-#define IPADDRESS_HOST 192.168.0.1
+#define IPADDRESS_HOST "192.168.0.1"
 
 class RouteStrategy;
 
