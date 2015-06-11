@@ -10,6 +10,7 @@
 #include "Firefly.h"
 #include "RouteStrategy.h"
 #include "WaypointIpad.h"
+#include "SensorCommand.h"
 
 int main(int argc, char** argv) {
     try {
@@ -17,7 +18,9 @@ int main(int argc, char** argv) {
         Firefly::getInstance()->go();
 
     } catch (std::exception &e) {
-        std::cout << "Exception: " << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }catch(...){
+        std::cerr << "Uncaught Exception: " << std::endl;
     }
     return 0;
 }

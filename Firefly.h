@@ -14,6 +14,7 @@
 #include "Comport.h"
 #include "WaypointIpad.h"
 #include "Network.h"
+#include "FireflyErrors.h"
 
 // Serial Port Magic Numbers //
 #define COMPORT "/dev/ttyS3" // the port were the serial is to be opened
@@ -41,6 +42,7 @@ public:
 
     Comport* getComport();
     wpcontainer_t* getWaypoints();
+    ErrorLogger* getErrorLogger();
 private:
     Firefly();
     // Send the data for drone status visualization
@@ -54,6 +56,7 @@ private:
     Network network_;
     RouteStrategy *strategy_;
     wpcontainer_t waypoints_;
+    ErrorLogger errlog_;
 };
 
 inline Comport* Firefly::getComport() {
@@ -62,5 +65,9 @@ inline Comport* Firefly::getComport() {
 
 inline wpcontainer_t* Firefly::getWaypoints(){
     return &waypoints_;
+}
+
+inline ErrorLogger* Firefly::getErrorLogger(){
+    return &errlog_;
 }
 #endif	/* FIREFLY_H */

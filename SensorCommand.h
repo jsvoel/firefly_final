@@ -8,8 +8,8 @@
 #ifndef SENSORCOMMAND_H
 #define	SENSORCOMMAND_H
 
-#include <stdexcept>
 #include <sstream>
+#include "FireflyErrors.h"
 
 #define PD_LLSTATUS 0x02
 #define PD_IMUCALCDATA 0x03

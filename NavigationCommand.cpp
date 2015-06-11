@@ -29,28 +29,56 @@ NavigationCommand::~NavigationCommand() {
 }
 
 void NavigationCommand::execute() {
+    Firefly* pff = Firefly::getInstance();
+    Comport* pcom = pff->getComport();
+    ErrorLogger* pel = pff->getErrorLogger();
+    int retries = 5; // Number of tries to get this command done
     WP_ACK ack;
-    Comport* pcom = Firefly::getInstance()->getComport();
+    bool completed = false;
+    
+    while(retries > 0){
+        try{
+            --retries;
+            
+            if (pcom->Write(request_, requestsize_) == false) {
+                std::stringstream ss;
+                ss << "Couldn't write command request of: " << commanddescription_ << std::endl;
+                throw FFExceptionNavREQ(ss.str().c_str());
+            }
 
-    if (pcom->Write(request_, requestsize_) == false) {
-        std::stringstream ss;
-        ss << "Couldn't write command request of: " << commanddescription_ << std::endl;
-        throw std::runtime_error(ss.str());
+            if (pcom->Read((char*) &ack, sizeof (WP_ACK), 10, 10) != sizeof (WP_ACK)) {
+                std::stringstream ss;
+                ss << "Acknowledge incomplete of: " << commanddescription_ << std::endl;
+                throw FFExceptionNavACK(ss.str().c_str());
+            }
+
+            if (ack.header.startstring[0] != '>' || ack.header.startstring[1] != 'a' ||
+                    ack.header.packet_desc != descriptor_ ||
+                    ack.footer.stopstring[0] != 'a' || ack.footer.stopstring[1] != '<') {
+                std::stringstream ss;
+                ss << "Acknowledge incorrect of: " << commanddescription_ << std::endl;
+                ss << ack.header.startstring[0] << ack.header.startstring[1] << ack.header.packet_desc
+                        << ack.footer.stopstring[0] << ack.footer.stopstring[1] << std::endl;
+                throw FFExceptionNavACK(ss.str().c_str());
+            }
+            
+            completed = true;
+            break;
+        }catch(FFExceptionNavREQ &e){
+            // error transmitting the request
+            // just try again
+            pel->log(e.what());
+        } catch(FFExceptionNavACK &e){
+            // error with the firefly acknwledge, clear the buffer and retry
+            pel->log(e.what());
+            pcom->clear();
+        }
     }
-
-    if (pcom->Read((char*) &ack, sizeof (WP_ACK), 10, 10) != sizeof (WP_ACK)) {
+    
+    if(!completed){
         std::stringstream ss;
-        ss << "Acknowledge incomplete of: " << commanddescription_ << std::endl;
-        throw std::runtime_error(ss.str());
-    }
-
-    if (ack.header.startstring[0] != '>' || ack.header.startstring[1] != 'a' ||
-            ack.header.packet_desc != descriptor_ ||
-            ack.footer.stopstring[0] != 'a' || ack.footer.stopstring[1] != '<') {
-        std::stringstream ss;
-        ss << "Acknowledge incorrect of: " << commanddescription_ << std::endl;
-        ss << ack.header.startstring[0] << ack.header.startstring[1] << ack.header.packet_desc
-                << ack.footer.stopstring[0] << ack.footer.stopstring[1] << std::endl;
+        ss << "Couldn't complete command " << commanddescription_ << std::endl;
+        pel->log(ss.str().c_str());
         throw std::runtime_error(ss.str());
     }
 }

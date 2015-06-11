@@ -8,7 +8,7 @@
 #ifndef NAVIGATIONCOMMAND_H
 #define	NAVIGATIONCOMMAND_H
 
-#include <stdexcept>
+#include "FireflyErrors.h"
 #include <sstream>
 
 class Comport;

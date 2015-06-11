@@ -25,39 +25,72 @@ SensorCommand::~SensorCommand() {
 }
 
 void SensorCommand::execute() {
-    Comport* pcom = Firefly::getInstance()->getComport();
+    Firefly* pff = Firefly::getInstance();
+    Comport* pcom = pff->getComport();
+    ErrorLogger* pel = pff->getErrorLogger();
+    int retries = 5;
+    bool completed = false;
 
-    if (pcom->Write((char*) &request_, 6) == false) {
-        std::stringstream ss;
-        ss << "Couldn't write command request of: " << commanddescription_ << std::endl;
-        throw std::runtime_error(ss.str());
+
+    while (retries > 0) {
+        try {
+            --retries;
+            if (pcom->Write((char*) &request_, 6) == false) {
+                std::stringstream ss;
+                ss << "Couldn't write command request of: " << commanddescription_ << std::endl;
+                throw FFExceptionSensREQ(ss.str().c_str());
+            }
+
+            if (pcom->Read(answerbuffer_, answersize_, 10, 10) != answersize_) {
+                std::stringstream ss;
+                ss << "Answer incomplete of: " << commanddescription_ << std::endl;
+                ss << (*this);
+                throw FFExceptionSensLEN(ss.str().c_str());
+            }
+
+            if (getHeader()->length != (answersize_ - sizeof (POLL_HEADER) - sizeof (POLL_FOOTER))) {
+                std::stringstream ss;
+                ss << "Answer length inccorect of: " << commanddescription_ << std::endl;
+                ss << (*this);
+                throw FFExceptionSensLEN(ss.str().c_str());
+            }
+
+            if (getHeader()->packet_desc != descriptor_) {
+                std::stringstream ss;
+                ss << "Answer descriptor inccorect of: " << commanddescription_ << std::endl;
+                ss << (*this);
+                throw FFExceptionSensDSC(ss.str().c_str());
+            }
+
+            if (getFooter()->crc16 != crc16(getAnswer(), (answersize_ - sizeof (POLL_HEADER) - sizeof (POLL_FOOTER)))) {
+                std::stringstream ss;
+                ss << "Answer crc inccorect of: " << commanddescription_ << std::endl;
+                ss << (*this);
+                throw FFExceptionSensCRC(ss.str().c_str());
+            }
+            completed = true;
+            break;
+        } catch (FFExceptionSensREQ &e) {
+            // error transmitting the request, just retry
+            pel->log(e.what());
+        } catch (FFExceptionSensLEN &e) {
+            // error regarding the lenght, flush buffers and retry
+            pel->log(e.what());
+            pcom->clear();
+        } catch (FFExceptionSensDSC &e) {
+            // error regarding the Descriptor, flush buffers and retry
+            pel->log(e.what());
+            pcom->clear();
+        } catch (FFExceptionSensCRC &e) {
+            // error with the checksum, just retry
+            pel->log(e.what());
+        }
     }
 
-    if (pcom->Read(answerbuffer_, answersize_, 10, 10) != answersize_) {
+    if (!completed) {
         std::stringstream ss;
-        ss << "Answer incomplete of: " << commanddescription_ << std::endl;
-        ss << (*this);
-        throw std::runtime_error(ss.str());
-    }
-
-    if (getHeader()->length != (answersize_ - sizeof (POLL_HEADER) - sizeof (POLL_FOOTER))) {
-        std::stringstream ss;
-        ss << "Answer length inccorect of: " << commanddescription_ << std::endl;
-        ss << (*this);
-        throw std::runtime_error(ss.str());
-    }
-
-    if (getHeader()->packet_desc != descriptor_) {
-        std::stringstream ss;
-        ss << "Answer descriptor inccorect of: " << commanddescription_ << std::endl;
-        ss << (*this);
-        throw std::runtime_error(ss.str());
-    }
-
-    if (getFooter()->crc16 != crc16(getAnswer(), (answersize_ - sizeof (POLL_HEADER) - sizeof (POLL_FOOTER)))) {
-        std::stringstream ss;
-        ss << "Answer crc inccorect of: " << commanddescription_ << std::endl;
-        ss << (*this);
+        ss << "Couldn't complete command " << commanddescription_ << std::endl;
+        pel->log(ss.str().c_str());
         throw std::runtime_error(ss.str());
     }
 }

@@ -21,6 +21,7 @@ public:
     
     bool Write(const char* buffer, int size);
     int Read(char* buffer, int size, int timeout, int retrycount);
+    void clear();
 private:
     boost::asio::io_service ioser_; //IO Service object to instantiate the serial port
     boost::asio::serial_port port_; //boost serial port
