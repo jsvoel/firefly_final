@@ -20,15 +20,17 @@ Firefly::Firefly()
 : comport_(COMPORT, BAUDRATE) {
     strategy_ = new RouteStrategy();
     network_.setIpadress(IPADDRESS_HOST);
-    
+
     timespec reqt, remt;
     reqt.tv_sec = 1;
     reqt.tv_nsec = 0;
     // don't do anything unless we can get our Network up and running
-    while(network_.initSocketRecv() == -1){
+    while (network_.initSocketRecv() == -1) {
+        errlog_.log("Couldn't open Socket RECV");
         nanosleep(&reqt, &remt);
     }
-    while(network_.initSocketSendInformation() == -1){
+    while (network_.initSocketSendInformation() == -1) {
+        errlog_.log("Couldn't open Socket SEND");
         nanosleep(&reqt, &remt);
     }
 }
@@ -50,13 +52,13 @@ Firefly* Firefly::getInstance() {
     return instance_;
 }
 
-void Firefly::go(){
-    while(true){
+void Firefly::go() {
+    while (true) {
         int status = network_.recvMission();
-        if(status == -2){ // received complete mission, lets go!
+        if (status == -2) { // received complete mission, lets go!
             clearRoute(); // delete the last Mission
             std::vector<waypoint> vwp = network_.getWaypoints(); // get the waypoint vector. waypoint defined in Network.h
-            for(int i = 0; i < vwp.size(); ++i){
+            for (int i = 0; i < vwp.size(); ++i) {
                 // convert network waypoint to IpadWaypoint and add them to the Firefly waypoint Container
                 pushWaypoint(WaypointIpad(vwp[i].latitude, vwp[i].longitude, vwp[i].height, vwp[i].speed));
             }
@@ -65,7 +67,7 @@ void Firefly::go(){
             // start the whole thing up
             start();
             // we are done, send the the Ipad a note that the mission is over and wait for the next mission
-            // network_.sendDataInformation("missioncomplete");
+            sendMissionDone();
         }
     }
 }
@@ -108,6 +110,13 @@ void Firefly::start() {
                 strategy_->onAbort();
             }
 
+            // check if the minimum voltage was reached
+            if (checkVoltage(plls->battery_voltage_1)) {
+                errlog_.log("Minimum voltage for save flight reached! onEnd() called.");
+                strategy_->onEnd(); // standard strategy -> land immediately
+                continue; // skip everything else to leave navigation loop
+            }
+
             // check if we reached the current waypoint, call only once before time is reached
             if (pcwc->navigation_status & WP_NAVSTAT_REACHED_POS && !reached_pos) {
                 strategy_->onReachWP();
@@ -121,7 +130,11 @@ void Firefly::start() {
                 reached_pos = false;
             }
         } catch (std::runtime_error &e) {
-            std::cerr << "Error durring navigation loop: " << e.what() << std::endl;
+            std::stringstream ss;
+            ss << "Error durring navigation loop: " << e.what();
+            std::string emsg = ss.str();
+            std::cerr << emsg << std::endl;
+            errlog_.log(emsg.c_str());
         }
     }
     // Leaving the navigation routine, maybe RouteStrategy has some clean up to do
@@ -135,13 +148,17 @@ void Firefly::sendData(int latitude, int longitude, int height, int speed_x, int
     dsy = dsy * dsy;
     speed = sqrt(dsx + dsy);
     speed = speed * 0.0036; // we want km/h not mm/s
-    
-    double lat = double(latitude) / 10000000.0;    
+
+    double lat = double(latitude) / 10000000.0;
     double lon = double(longitude) / 10000000.0;
     double chg = double(voltage) / 1000.0;
     double hei = double(height);
-    
-    network_.sendDataInformation(network_.parseSend("",lat, lon, hei, chg, speed));
+
+    network_.sendDataInformation(network_.parseSend("mission", lat, lon, hei, chg, speed));
+}
+
+void Firefly::sendMissionDone() {
+    network_.sendDataInformation(network_.parseSend("mission", 0, 0, 0, 0, 0));
 }
 
 bool Firefly::checkAbort() {

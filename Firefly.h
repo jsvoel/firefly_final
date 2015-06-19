@@ -20,7 +20,9 @@
 #define COMPORT "/dev/ttyS3" // the port were the serial is to be opened
 #define BAUDRATE 57600 // the baud rate it shall be set to
 // Network Socket Magic Numbers //
-#define IPADDRESS_HOST "192.168.0.1"
+#define IPADDRESS_HOST "192.168.1.30"
+// Other Magic Values //
+#define MINIMUM_VOLTAGE_THRESHOLD 10000 // Minimum voltage that is check, when lower RouteStrategy->onEnd() will be called
 
 class RouteStrategy;
 
@@ -29,12 +31,12 @@ typedef std::list<WaypointIpad> wpcontainer_t;
 class Firefly {
 public:
     virtual ~Firefly();
-    
+
     // get the Firefly instance
     static Firefly* getInstance();
     // call go() on it, to start everything. Doesn't return if everything is ok
     void go();
-    
+
     void start(); // start to fly the route using provided Waypoints and Strategy
     void clearRoute(); // clear all waypoints
     void setRouteStrategy(RouteStrategy *rs); // set the RouteStrategy
@@ -47,8 +49,12 @@ private:
     Firefly();
     // Send the data for drone status visualization
     void sendData(int latitude, int longitude, int height, int speed_x, int speed_y, short voltage, short navstat);
+    // Send this when mission is done
+    void sendMissionDone();
     // Check if the operator wants to abort the route
     bool checkAbort();
+    // Check if the minimum voltage is reached
+    bool checkVoltage(short volt);
 
     static Firefly *instance_;
 
@@ -63,11 +69,15 @@ inline Comport* Firefly::getComport() {
     return &comport_;
 }
 
-inline wpcontainer_t* Firefly::getWaypoints(){
+inline wpcontainer_t* Firefly::getWaypoints() {
     return &waypoints_;
 }
 
-inline ErrorLogger* Firefly::getErrorLogger(){
+inline ErrorLogger* Firefly::getErrorLogger() {
     return &errlog_;
+}
+
+inline bool Firefly::checkVoltage(short volt) {
+    return volt < MINIMUM_VOLTAGE_THRESHOLD;
 }
 #endif	/* FIREFLY_H */

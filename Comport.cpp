@@ -58,6 +58,6 @@ int Comport::Read(char* buffer, int size, int timeout, int retrycount) {
     return index;
 }
 
-void Comport::clear(){
-    ::tcflush(port_.handle(), TCIOFLUSH); // flush read and write buffers
+void Comport::clear() {
+    ::tcflush(port_.native(), TCIOFLUSH); // flush read and write buffers
 }
